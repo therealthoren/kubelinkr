@@ -4,11 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Icon, SectionCard } from '@blueprintjs/core';
 import toast, { Toaster } from 'react-hot-toast';
 import { Channels } from '../models/channel';
-import {
-  IConfig,
-  IPortForward,
-  IProject,
-} from '../models/IConfig';
+import { IConfig, IPortForward, IProject } from '../models/IConfig';
 import {
   IConfigWithStates,
   IPortForwardWithState,
