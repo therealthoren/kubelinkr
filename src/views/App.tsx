@@ -57,6 +57,10 @@ function Home() {
   };
 
   useEffect(() => {
+    if (!window.electron) {
+      showError('Electron not available');
+      return;
+    }
     // calling IPC exposed from preload script
     window.electron.ipcRenderer.on(Channels.CONFIG_CHANGED, (data: any) => {
       setConfig(data);

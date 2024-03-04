@@ -66,6 +66,7 @@
       "json"
     ],
     "moduleNameMapper": {
+      "^d3-(.*)$": "<rootDir>/node_modules/d3-$1/dist/d3-$1.min.js",
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/.erb/mocks/fileMock.js",
       "\\.(css|less|sass|scss)$": "identity-obj-proxy"
     },
@@ -79,6 +80,9 @@
     "testPathIgnorePatterns": [
       "release/app/dist",
       ".erb/dll"
+    ],
+    "transformIgnorePatterns": [
+      "/node_modules/(?!d3|d3-array|d3-scale)"
     ],
     "transform": {
       "\\.(ts|tsx|js|jsx)$": "ts-jest"
@@ -94,6 +98,7 @@
     "@blueprintjs/table": "^5.1.2",
     "@blueprintjs/timezone": "^4.5.43",
     "@kubernetes/client-node": "^0.20.0",
+    "d3-scale": "^4.0.2",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
     "electron-updater": "^6.1.4",
