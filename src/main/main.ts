@@ -80,6 +80,7 @@ const createWindow = async () => {
     show: false,
     width: 1024,
     height: 312,
+    frame: false,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged
@@ -94,11 +95,7 @@ const createWindow = async () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
     }
-    if (process.env.START_MINIMIZED) {
-      mainWindow.minimize();
-    } else {
-      mainWindow.show();
-    }
+    mainWindow.hide();
     const tray = new TrayGenerator(mainWindow);
     tray.createTray();
   });
@@ -124,6 +121,11 @@ const createWindow = async () => {
 /**
  * Add event listeners...
  */
+
+if (app.dock) {
+  app.dock.hide();
+  app.dock.setBadge('');
+}
 
 app.on('browser-window-focus', () => {
   if (mainWindow) {

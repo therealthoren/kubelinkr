@@ -4,7 +4,7 @@
   "description": "A MenuBar One-Click Application for kubernet forwarding multiple ports to your local environment",
   "license": "MIT",
   "author": {
-    "name": "Thoren Le",
+    "name": "Thoren Lederer",
     "email": "donnercody86@gmail.com",
     "url": "https://github.com/donnercody/kubelinkr"
   },
