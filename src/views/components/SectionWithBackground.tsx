@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Area, AreaChart, ResponsiveContainer, YAxis } from 'recharts';
-import { scaleSymlog, scaleLog } from 'd3-scale';
+import { scaleSymlog } from 'd3-scale';
 import { Icon } from '@blueprintjs/core';
-import {
-  IAllTrafficData,
-  IProject,
-  IProjectWithTrafficData,
-} from '../../models/IConfig';
+import { IAllTrafficData, IProjectWithTrafficData } from '../../models/IConfig';
 import { Channels } from '../../models/channel';
 import { IProjectWithState } from '../../models/IState';
 
@@ -15,6 +11,7 @@ const scale = scaleSymlog();
 export interface ISectionWithBackgroundProps {
   rightElement: React.ReactNode;
   title: React.ReactNode;
+  // eslint-disable-next-line react/require-default-props
   children?: any;
   project: IProjectWithState;
 }
@@ -32,13 +29,15 @@ function SectionWithBackground({
   useEffect(() => {
     window.electron.ipcRenderer.on(
       Channels.TRAFFIC_DATA,
+      // @ts-ignore
       (data: IAllTrafficData) => {
         const projectData =
           project.name in data && data[project.name] ? data[project.name] : {};
+        // @ts-ignore
         setTrafficData(projectData);
       },
     );
-  }, []);
+  }, [project.name]);
 
   const collapseToggle = () => {
     setCollapsed(!collapsed);
@@ -46,6 +45,7 @@ function SectionWithBackground({
 
   return (
     <div
+      key={`${project.name}-wrapper`}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -53,6 +53,9 @@ function SectionWithBackground({
       }}
     >
       <div
+        key={`${project.name}-section`}
+        onClick={() => collapseToggle()}
+        role="presentation"
         style={{
           display: 'flex',
           padding: '5px 12px 5px 5px',
@@ -62,7 +65,6 @@ function SectionWithBackground({
           overflow: 'hidden',
           cursor: 'pointer',
         }}
-        onClick={() => collapseToggle()}
       >
         <div style={{ flex: '0.6 1', zIndex: 99, fontWeight: 'bold' }}>
           {title}

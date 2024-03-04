@@ -6,7 +6,6 @@ export interface IPortForward {
   name: string;
 }
 
-
 export interface IProject {
   name: string;
   stagingGroup?: string;

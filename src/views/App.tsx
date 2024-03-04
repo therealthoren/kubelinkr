@@ -2,22 +2,24 @@ import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import React, { useEffect, useState } from 'react';
 import { Button, Icon, SectionCard } from '@blueprintjs/core';
+import toast, { Toaster } from 'react-hot-toast';
 import { Channels } from '../models/channel';
-import { IAllTrafficData, IConfig, IPortForward, IProject } from "../models/IConfig";
+import {
+  IConfig,
+  IPortForward,
+  IProject,
+} from '../models/IConfig';
 import {
   IConfigWithStates,
   IPortForwardWithState,
   IProjectWithState,
   IState,
 } from '../models/IState';
-import toast, { Toaster } from 'react-hot-toast';
-import SectionWithBackground from "./components/SectionWithBackground";
+import SectionWithBackground from './components/SectionWithBackground';
 
 const showError = (message: string) => {
   toast.error(message);
-}
-
-
+};
 
 function Home() {
   const [configWithStates, setConfigWithStates] =
@@ -31,7 +33,9 @@ function Home() {
       const newProject: IProjectWithState = { ...project } as IProjectWithState;
       newProject.portforwards = newProject.portforwards.map(
         (pf: IPortForward) => {
-          const newPf: IPortForwardWithState = { ...pf } as IPortForwardWithState;
+          const newPf: IPortForwardWithState = {
+            ...pf,
+          } as IPortForwardWithState;
           const state = s.activeForwards.find(
             (f) =>
               f.name === pf.name &&
@@ -62,14 +66,12 @@ function Home() {
       setConfig(data);
     });
     window.electron.ipcRenderer.on(Channels.SHOW_ERROR, (data: any) => {
-
       showError(data.message);
     });
     // calling IPC exposed from preload script
     window.electron.ipcRenderer.on(Channels.STATE_CHANGED, (data: any) => {
       setForwardStates(data);
     });
-
 
     window.electron.ipcRenderer.sendMessage(Channels.LOADED, []);
     // Clean the listener after the component is dismounted
@@ -84,7 +86,6 @@ function Home() {
     }
   }, [config, forwardStates]);
 
-
   return (
     <div className="innerContainer">
       {!configWithStates && <p>Waiting for config...</p>}
@@ -93,7 +94,9 @@ function Home() {
           <SectionWithBackground
             key={project.name}
             project={project}
-            title={`${project.name}`+(project.stagingGroup ? ` - ${project.stagingGroup}` : '')+` - ${project.contextName}`}
+            title={`${project.name}${
+              project.stagingGroup ? ` - ${project.stagingGroup}` : ''
+            } - ${project.contextName}`}
             rightElement={
               project.running ? (
                 <Button

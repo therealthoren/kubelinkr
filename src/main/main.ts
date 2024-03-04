@@ -25,7 +25,7 @@ import {
   registerTrafficCallback,
   startProjectForwarding,
   stopProjectForwarding,
-} from "./kube/forward";
+} from './kube/forward';
 
 class AppUpdater {
   constructor() {
@@ -210,10 +210,14 @@ ipcMain.on(Channels.START_PROJECT, (event: any, data: IProject) => {
     try {
       let waitForTimeout = 1;
       if (data.stagingGroup) {
-        const projectsForGroup = config?.projects.filter(p => p.stagingGroup === data.stagingGroup && p.name !== data.name);
+        const projectsForGroup = config?.projects.filter(
+          (p) => p.stagingGroup === data.stagingGroup && p.name !== data.name,
+        );
         console.log('Same group projects', projectsForGroup);
         if (projectsForGroup) {
+          // eslint-disable-next-line no-restricted-syntax
           for (const p of projectsForGroup) {
+            // @ts-ignore
             stopProjectForwarding(p);
             waitForTimeout = 500;
           }
@@ -230,9 +234,8 @@ ipcMain.on(Channels.START_PROJECT, (event: any, data: IProject) => {
           }
         });
       }, waitForTimeout);
-
-    }
-    catch(e) {
+    } catch (e) {
+      /* empty */
     }
     refreshData();
   }, 1);
@@ -242,8 +245,7 @@ ipcMain.on(Channels.STOP_PROJECT, (event: any, data: any) => {
   setTimeout(() => {
     try {
       stopProjectForwarding(data);
-    }
-    catch (e) {
+    } catch (e: any) {
       mainWindow?.webContents.send(Channels.SHOW_ERROR, {
         title: 'Error while stopping project',
         message: e.message,

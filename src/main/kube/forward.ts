@@ -100,7 +100,7 @@ const addTrafficData = (
 
 const getUserHome = () => {
   return process.env.HOME || process.env.USERPROFILE;
-}
+};
 
 const kubeBasicsData: any = yaml.load(
   fs.readFileSync(`${getUserHome()}/.kube/config`, 'utf8'),
@@ -109,12 +109,12 @@ const kubeBasicsData: any = yaml.load(
 const getClientCertificateData = (userName: any) => {
   const context = kubeBasicsData.users.find((c: any) => c.name === userName);
   return context.user['client-certificate-data'];
-}
+};
 
 const getClientKeyData = (userName: any) => {
   const context = kubeBasicsData.users.find((c: any) => c.name === userName);
   return context.user['client-key-data'];
-}
+};
 
 const getBearerToken = (userName: string) => {
   const context = kubeBasicsData.users.find((c: any) => c.name === userName);
@@ -276,6 +276,7 @@ const startPortForwarding = (
           });
 
           _serversocket.on('data', (data: any) => {
+            // eslint-disable-next-line no-new,no-async-promise-executor
             new Promise(async () => {
               try {
                 const buff = Buffer.alloc(data.length + 1);
@@ -290,7 +291,7 @@ const startPortForwarding = (
 
                 debugLog('server writes', data);
                 // Wait until ws is Open
-                for (let i = 0; i < 1000; i++) {
+                for (let i = 0; i < 1000; i += 1) {
                   if (ws.readyState === WebSocket.OPEN) {
                     break;
                   }
@@ -320,7 +321,9 @@ const startPortForwarding = (
               if (!forcedDisconnect) {
                 connect();
               }
-            } catch (e) {}
+            } catch (e) {
+              /* empty */
+            }
           });
         };
 
@@ -385,7 +388,7 @@ const startPortForwarding = (
 
     const c = createClient(serverSocket, () => {
       runningClients = runningClients.filter(
-        (c: IServerSocketClient) => c.serversocket !== serverSocket,
+        (ssc: IServerSocketClient) => ssc.serversocket !== serverSocket,
       );
       debugLog(runningClients.length);
     });

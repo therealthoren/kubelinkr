@@ -4,7 +4,7 @@ import { IConfig } from '../../models/IConfig';
 const { app } = require('electron');
 
 function getAppPath() {
-  return app.getPath("appData")+'/kubelinkr/';
+  return `${app.getPath('appData')}/kubelinkr/`;
 }
 
 export const writeConfig = (path: string): void => {
@@ -14,21 +14,21 @@ export const writeConfig = (path: string): void => {
     if (!fs.existsSync(getAppPath())) {
       fs.mkdirSync(getAppPath());
     }
-    console.log(app.getAppPath() );
-    fs.writeFileSync(getAppPath() + 'config.json', data);
+    console.log(app.getAppPath());
+    fs.writeFileSync(`${getAppPath()}config.json`, data);
   } catch (e) {
     console.error(e);
     throw e;
   }
 };
 
-export const loadConfig = (): IConfig => {
+export const loadConfig = (): IConfig | null => {
   try {
     console.log(getAppPath());
-    const data = fs.readFileSync(getAppPath()+'config.json', 'utf8');
+    const data = fs.readFileSync(`${getAppPath()}config.json`, 'utf8');
     return JSON.parse(data);
   } catch (e) {
     console.error(e);
-    return null;
   }
+  return null;
 };

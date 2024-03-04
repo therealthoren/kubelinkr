@@ -11,7 +11,6 @@ export interface IActiveForwards {
   namespace?: string;
 }
 
-
 export interface IState {
   activeForwards: IActiveForwards[];
 }

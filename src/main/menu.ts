@@ -3,8 +3,9 @@ import {
   Menu,
   shell,
   BrowserWindow,
-  MenuItemConstructorOptions, ipcMain
-} from "electron";
+  MenuItemConstructorOptions,
+  ipcMain,
+} from 'electron';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -52,6 +53,7 @@ export default class MenuBuilder {
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   buildDarwinTemplate(): MenuItemConstructorOptions[] {
     const subMenuAbout: DarwinMenuItemConstructorOptions = {
       label: 'Kubelinkr',
@@ -96,6 +98,7 @@ export default class MenuBuilder {
     return [subMenuAbout, subMenuWindow, subMenuHelp];
   }
 
+  // eslint-disable-next-line class-methods-use-this
   buildDefaultTemplate() {
     const templateDefault = [
       {
