@@ -57,23 +57,21 @@ function Home() {
   };
 
   useEffect(() => {
-    if (!window.electron) {
-      showError('Electron not available');
-      return;
-    }
-    // calling IPC exposed from preload script
-    window.electron.ipcRenderer.on(Channels.CONFIG_CHANGED, (data: any) => {
-      setConfig(data);
-    });
-    window.electron.ipcRenderer.on(Channels.SHOW_ERROR, (data: any) => {
-      showError(data.message);
-    });
-    // calling IPC exposed from preload script
-    window.electron.ipcRenderer.on(Channels.STATE_CHANGED, (data: any) => {
-      setForwardStates(data);
-    });
+    if (window.electron) {
+      // calling IPC exposed from preload script
+      window.electron.ipcRenderer.on(Channels.CONFIG_CHANGED, (data: any) => {
+        setConfig(data);
+      });
+      window.electron.ipcRenderer.on(Channels.SHOW_ERROR, (data: any) => {
+        showError(data.message);
+      });
+      // calling IPC exposed from preload script
+      window.electron.ipcRenderer.on(Channels.STATE_CHANGED, (data: any) => {
+        setForwardStates(data);
+      });
 
-    window.electron.ipcRenderer.sendMessage(Channels.LOADED, []);
+      window.electron.ipcRenderer.sendMessage(Channels.LOADED, []);
+    }
     // Clean the listener after the component is dismounted
     return () => {
       window.electron.ipcRenderer.removeAllListeners();
