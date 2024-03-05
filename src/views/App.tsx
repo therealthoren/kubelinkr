@@ -71,11 +71,12 @@ function Home() {
       });
 
       window.electron.ipcRenderer.sendMessage(Channels.LOADED, []);
+      // Clean the listener after the component is dismounted
+      return () => {
+        window.electron.ipcRenderer.removeAllListeners();
+      };
     }
-    // Clean the listener after the component is dismounted
-    return () => {
-      window.electron.ipcRenderer.removeAllListeners();
-    };
+    return () => {};
   }, []);
 
   useEffect(() => {
