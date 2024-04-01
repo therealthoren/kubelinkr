@@ -1,20 +1,26 @@
 export interface IPortForward {
   localPort: number;
+  id: string;
   contextNamespace: string;
   sourcePort: number;
+  contextName: string;
   type: string;
   name: string;
 }
 
 export interface IProject {
+  id?: string;
   name: string;
   stagingGroup?: string;
-  contextName: string;
   portforwards: IPortForward[];
 }
 
 export interface IConfig {
   projects: IProject[];
+}
+
+export interface IConfigWithLoadingUpdated extends IConfig {
+  changed: boolean;
 }
 
 export interface IServerSocketClient {

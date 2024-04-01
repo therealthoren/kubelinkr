@@ -15,23 +15,17 @@ import {
   IProject,
   IServerSocketClient,
 } from '../../models/IConfig';
+import { debugLog, getAuthorizationData, getContext } from "./kubeHelper";
 
 const WebSocket = require('ws');
-
-const DEBUG = false;
 
 // @ts-ignore
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
-const debugLog = (message: any, ...args: any[]) => {
-  if (DEBUG) {
-    console.log(message, ...args);
-  }
-};
-
 const forwardStates: IState = {
   activeForwards: [],
 };
+
 const forwardController: { [key: string]: IPortForwardController } = {};
 const projectTraffic: IAllTrafficData = {};
 const projectTrafficCallbacks: any[] = [];
@@ -98,51 +92,9 @@ const addTrafficData = (
   }
 };
 
-const getUserHome = () => {
-  return process.env.HOME || process.env.USERPROFILE;
-};
-
-const kubeBasicsData: any = yaml.load(
-  fs.readFileSync(`${getUserHome()}/.kube/config`, 'utf8'),
-);
-
-const getClientCertificateData = (userName: any) => {
-  const context = kubeBasicsData.users.find((c: any) => c.name === userName);
-  return context.user['client-certificate-data'];
-};
-
-const getClientKeyData = (userName: any) => {
-  const context = kubeBasicsData.users.find((c: any) => c.name === userName);
-  return context.user['client-key-data'];
-};
-
-const getBearerToken = (userName: string) => {
-  const context = kubeBasicsData.users.find((c: any) => c.name === userName);
-  return context.user.token;
-};
-
-const getContext = (contextName: string) => {
-  return kubeBasicsData.contexts.find((c: any) => c.name === contextName);
-};
-
-const getKubeUrl = (clusterName: string) => {
-  const context = kubeBasicsData.clusters.find(
-    (c: any) => c.name === clusterName,
-  );
-  if (!context) {
-    console.error('context not found', clusterName);
-    throw new Error('context not found');
-  }
-  return context.cluster.server;
-};
-
 const generateRandomId = () => {
   const e = uuidv4();
   return e;
-};
-
-const base64Decode = (clientKeyData: string) => {
-  return Buffer.from(clientKeyData, 'base64').toString('utf-8');
 };
 
 // eslint-disable-next-line import/prefer-default-export
@@ -185,43 +137,26 @@ const startPortForwarding = (
         openConnectionId += 1;
         const namespace: string = forward.contextNamespace || 'default';
         debugLog('namespace', namespace);
-        const context = getContext(project.contextName);
+        const context = getContext(forward.contextName);
         debugLog(context);
-        const clusterName = context.context.cluster;
-        const userName = context.context.user;
-        debugLog('clusterName', clusterName);
-        const url = getKubeUrl(clusterName)
-          .replace('https://', 'wss://')
-          .replace('http://', 'ws://');
-        debugLog('url', url);
-        const bearer = getBearerToken(userName);
-        let authorizationData: any = {};
-        let additionalWebSocketOptions: any = {};
-        if (!bearer) {
-          const clientCertificateData = getClientCertificateData(userName);
-          const clientKeyData = getClientKeyData(userName);
-
-          // Add the cert and key to the authorizationData for the websocket headers
-          authorizationData = {};
-
-          additionalWebSocketOptions = {
-            cert: base64Decode(clientCertificateData),
-            key: base64Decode(clientKeyData),
-            rejectUnauthorized: false,
-          };
-        } else {
-          authorizationData = {
-            Authorization: `Bearer ${bearer}`,
-          };
-        }
+        let {
+          url,
+          authorizationData,
+          additionalHeaderOptions,
+        } = getAuthorizationData(forward);
+        url = url.replace('https://', 'wss://').replace('http://', 'ws://');
         let messageCount = 0;
         let forcedDisconnect = false;
         let answerResetTimeout: any = null;
         let ws: any;
+        debugLog(authorizationData);
+        debugLog(additionalHeaderOptions);
+        const websocketPath = `${url}/api/v1/namespaces/${namespace}/pods/${forward.name}/portforward?ports=${forward.sourcePort}`;
+        debugLog(websocketPath);
 
         const connect = () => {
           ws = new WebSocket(
-            `${url}/api/v1/namespaces/${namespace}/pods/${forward.name}/portforward?ports=${forward.sourcePort}`,
+            websocketPath,
             [
               'v4.channel.k8s.io',
               'v3.channel.k8s.io',
@@ -229,7 +164,7 @@ const startPortForwarding = (
               'channel.k8s.io',
             ],
             {
-              ...additionalWebSocketOptions,
+              ...additionalHeaderOptions,
               headers: {
                 Upgrade: 'websocket',
                 Connection: 'Upgrade',

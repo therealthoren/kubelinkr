@@ -48,9 +48,7 @@ class TrayGenerator {
   toggleWindow = () => {
     if (this.mainWindow.isVisible()) {
       this.mainWindow.hide();
-      this.tray.setImage(getAssetPath('tray/inactive.png'));
     } else {
-      this.tray.setImage(getAssetPath('tray/active.png'));
       this.showWindow();
     }
   };
@@ -63,6 +61,14 @@ class TrayGenerator {
       },
     ];
     this.tray.popUpContextMenu(Menu.buildFromTemplate(menu));
+  };
+
+  setActive = () => {
+    this.tray.setImage(getAssetPath('tray/active.png'));
+  };
+
+  setInactive = () => {
+    this.tray.setImage(getAssetPath('tray/inactive.png'));
   };
 
   createTray = () => {

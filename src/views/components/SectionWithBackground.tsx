@@ -66,9 +66,7 @@ function SectionWithBackground({
           cursor: 'pointer',
         }}
       >
-        <div style={{ flex: '0.6 1', zIndex: 99, fontWeight: 'bold' }}>
-          {title}
-        </div>
+        <div style={{ flex: '0.6 1', fontWeight: 'bold' }}>{title}</div>
         <div
           style={{
             flex: '0.3 1',
@@ -111,10 +109,17 @@ function SectionWithBackground({
             )}
           </div>
         </div>
-        <div style={{ flex: '0.05 1', zIndex: 99, paddingLeft: '4px' }}>
+        <div
+          style={{
+            flex: '0.2 1',
+            paddingLeft: '4px',
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+          }}
+        >
           {rightElement}
         </div>
-        <div style={{ flex: '0.05 1', paddingLeft: '8px', zIndex: 99 }}>
+        <div style={{ flex: '0.05 1', paddingLeft: '8px' }}>
           {collapsed ? (
             <Icon icon="chevron-down" />
           ) : (

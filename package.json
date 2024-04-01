@@ -98,6 +98,7 @@
     "@blueprintjs/table": "^5.1.2",
     "@blueprintjs/timezone": "^4.5.43",
     "@kubernetes/client-node": "^0.20.0",
+    "axios": "^1.6.8",
     "d3-scale": "^4.0.2",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
@@ -107,6 +108,7 @@
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.16.0",
+    "react-select": "^5.8.0",
     "recharts": "^2.12.2",
     "uuid": "^9.0.1",
     "websocket-driver": "^0.7.4"
