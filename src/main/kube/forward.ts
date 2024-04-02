@@ -15,7 +15,7 @@ import {
   IProject,
   IServerSocketClient,
 } from '../../models/IConfig';
-import { debugLog, getAuthorizationData, getContext } from "./kubeHelper";
+import { debugLog, getAuthorizationData, getContext } from './kubeHelper';
 
 const WebSocket = require('ws');
 
@@ -139,19 +139,18 @@ const startPortForwarding = (
         debugLog('namespace', namespace);
         const context = getContext(forward.contextName);
         debugLog(context);
-        let {
-          url,
-          authorizationData,
-          additionalHeaderOptions,
-        } = getAuthorizationData(forward);
-        url = url.replace('https://', 'wss://').replace('http://', 'ws://');
+        const { url, authorizationData, additionalHeaderOptions } =
+          getAuthorizationData(forward);
+        const wssurl = url
+          .replace('https://', 'wss://')
+          .replace('http://', 'ws://');
         let messageCount = 0;
         let forcedDisconnect = false;
         let answerResetTimeout: any = null;
         let ws: any;
         debugLog(authorizationData);
         debugLog(additionalHeaderOptions);
-        const websocketPath = `${url}/api/v1/namespaces/${namespace}/pods/${forward.name}/portforward?ports=${forward.sourcePort}`;
+        const websocketPath = `${wssurl}/api/v1/namespaces/${namespace}/pods/${forward.name}/portforward?ports=${forward.sourcePort}`;
         debugLog(websocketPath);
 
         const connect = () => {

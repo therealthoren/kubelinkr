@@ -26,6 +26,10 @@ export interface EditPortForwardProps {
   portForward: IPortForward | null;
 }
 
+const defaultProps = {
+  createMode: false,
+};
+
 function AddOrEditPortForward({
   isOpen,
   onSaved,
@@ -66,15 +70,9 @@ function AddOrEditPortForward({
     setFieldErrors(newErrors);
   };
 
-  const resetError = (field: string) => {
-    const newErrors = { ...fieldErrors };
-    delete newErrors[field];
-    setFieldErrors(newErrors);
-  };
-
   const resetErrors = () => {
     setFieldErrors({});
-  }
+  };
 
   const updatePortForwardProps = (key: string, value: any) => {
     resetErrors();
@@ -92,14 +90,10 @@ function AddOrEditPortForward({
         })
         .catch((e: any) => {
           setLoading(false);
-          setErrorForField(
-            'contextName',
-            `Could not load namespaces - ${e}`,
-          );
+          setErrorForField('contextName', `Could not load namespaces - ${e}`);
           /* empty */
         });
-    }
-    else if (key === 'contextNamespace') {
+    } else if (key === 'contextNamespace') {
       setLoading(true);
       getIpcRequestData(Channels.REQUEST_GET_PODS, {
         context: updatedPortForward.contextName,
@@ -112,10 +106,7 @@ function AddOrEditPortForward({
         })
         .catch((e: any) => {
           setLoading(false);
-          setErrorForField(
-            'contextNamespace',
-            `Could not load pods - ${e}`,
-          );
+          setErrorForField('contextNamespace', `Could not load pods - ${e}`);
           /* empty */
         });
     }
@@ -129,12 +120,16 @@ function AddOrEditPortForward({
   };
 
   const isFieldSet = (field: string) => {
-    if (typeof updatedPortForward[field] !== "undefined" &&
-        updatedPortForward[field] != null) {
+    if (
+      // @ts-ignore
+      typeof updatedPortForward[field] !== 'undefined' &&
+      // @ts-ignore
+      updatedPortForward[field] != null
+    ) {
       return true;
     }
     return false;
-  }
+  };
 
   const saveProjectByPortForwarrd = () => {
     let found = false;
@@ -209,7 +204,7 @@ function AddOrEditPortForward({
               value: updatedPortForward.contextName,
               label: updatedPortForward.contextName,
             }}
-            onChange={(e) => updatePortForwardProps('contextName', e.value)}
+            onChange={(e) => updatePortForwardProps('contextName', e?.value)}
             options={contexts.map((n) => ({ value: n, label: n }))}
           />
           {fieldErrors.contextName && (
@@ -230,7 +225,7 @@ function AddOrEditPortForward({
               label: updatedPortForward.contextNamespace,
             }}
             onChange={(e) =>
-              updatePortForwardProps('contextNamespace', e.value)
+              updatePortForwardProps('contextNamespace', e?.value)
             }
             options={namespaces.map((n) => ({ value: n, label: n }))}
           />
@@ -251,9 +246,7 @@ function AddOrEditPortForward({
               value: updatedPortForward.name,
               label: updatedPortForward.name,
             }}
-            onChange={(e) =>
-              updatePortForwardProps('name', e.value)
-            }
+            onChange={(e) => updatePortForwardProps('name', e?.value)}
             options={pods.map((n) => ({ value: n, label: n }))}
           />
         </FormGroup>
@@ -270,9 +263,17 @@ function AddOrEditPortForward({
             labelFor="text-input"
             labelInfo="(required)"
           >
-            <InputGroup id="text-input" type="number" placeholder="7999"
-                        onChange={(e) => updatePortForwardProps("localPort", parseInt(e.target.value))}
-                        value={updatedPortForward.localPort}
+            <InputGroup
+              id="text-input"
+              type="number"
+              placeholder="7999"
+              onChange={(e) =>
+                updatePortForwardProps(
+                  'localPort',
+                  parseInt(e.target.value, 10),
+                )
+              }
+              value={updatedPortForward.localPort?.toString()}
             />
           </FormGroup>
           <FormGroup
@@ -280,9 +281,17 @@ function AddOrEditPortForward({
             labelFor="text-input"
             labelInfo="(required)"
           >
-            <InputGroup id="text-input" type="number" placeholder="80"
-                        onChange={(e) => updatePortForwardProps("sourcePort", parseInt(e.target.value))}
-                        value={updatedPortForward.sourcePort}
+            <InputGroup
+              id="text-input"
+              type="number"
+              placeholder="80"
+              onChange={(e) =>
+                updatePortForwardProps(
+                  'sourcePort',
+                  parseInt(e.target.value, 10),
+                )
+              }
+              value={updatedPortForward.sourcePort?.toString()}
             />
           </FormGroup>
         </div>
@@ -390,5 +399,7 @@ function AddOrEditPortForward({
     </Dialog>
   );
 }
+
+AddOrEditPortForward.defaultProps = defaultProps;
 
 export default AddOrEditPortForward;
