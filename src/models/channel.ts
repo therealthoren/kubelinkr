@@ -10,4 +10,11 @@ export enum Channels {
   SHOW_WARNING = 'show-warning',
   SHOW_SUCCESS = 'show-success',
   TRAFFIC_DATA = 'traffic-data',
+  EDIT_PROJECT = 'edit-project',
+  UPDATE_OR_CREATE_PROJECT = 'update-or-create-project',
+  DELETE_PROJECT = 'delete-project',
+  REQUEST_ANSWER = 'request-answer',
+  REQUEST_GET_NAMESPACES = 'request-get-namespaces',
+  REQUEST_GET_CONTEXTS = 'request-get-contexts',
+  REQUEST_GET_PODS = 'request-get-pods',
 }

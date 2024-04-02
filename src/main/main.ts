@@ -25,7 +25,15 @@ import {
   registerTrafficCallback,
   startProjectForwarding,
   stopProjectForwarding,
-} from "./kube/forward";
+} from './kube/forward';
+import {
+  answerRequestDataWithError,
+  answerRequestDataWithSuccess,
+  debugLog,
+  getAllContexts,
+  getAllNamespaces,
+  getAllPods,
+} from './kube/kubeHelper';
 
 class AppUpdater {
   constructor() {
@@ -35,8 +43,11 @@ class AppUpdater {
   }
 }
 
+let tray: TrayGenerator | null = null;
 let mainWindow: BrowserWindow | null = null;
-let config: IConfig | null = null;
+let config: IConfig = {
+  projects: [],
+};
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -49,6 +60,14 @@ const isDebug =
 if (isDebug) {
   require('electron-debug')();
 }
+
+const checkStatesForActiveness = (states: IState) => {
+  if (states.activeForwards.length > 0) {
+    tray?.setActive();
+  } else {
+    tray?.setInactive();
+  }
+};
 
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
@@ -80,6 +99,7 @@ const createWindow = async () => {
     show: false,
     width: 1024,
     height: 312,
+    frame: false,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged
@@ -94,12 +114,8 @@ const createWindow = async () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
     }
-    if (process.env.START_MINIMIZED) {
-      mainWindow.minimize();
-    } else {
-      mainWindow.show();
-    }
-    const tray = new TrayGenerator(mainWindow);
+    mainWindow.hide();
+    tray = new TrayGenerator(mainWindow);
     tray.createTray();
   });
 
@@ -124,6 +140,11 @@ const createWindow = async () => {
 /**
  * Add event listeners...
  */
+
+if (app.dock) {
+  app.dock.hide();
+  app.dock.setBadge('');
+}
 
 app.on('browser-window-focus', () => {
   if (mainWindow) {
@@ -164,7 +185,11 @@ app
 
 ipcMain.on(Channels.LOADED, async (event: any) => {
   try {
-    config = loadConfig();
+    const loadedConfig = loadConfig();
+    if (loadedConfig && loadedConfig.changed) {
+      writeConfig(loadedConfig);
+    }
+    config = loadedConfig;
     event.reply(Channels.CONFIG_CHANGED, config);
     event.reply(Channels.STATE_CHANGED, forwardStates);
   } catch (e) {
@@ -180,10 +205,17 @@ ipcMain.on('load-config-from-menu', () => {
     })
     .then((result) => {
       if (!result.canceled) {
-        const filePath = result.filePaths[0];
         try {
-          writeConfig(filePath);
-          config = loadConfig();
+          const loadedConfig = loadConfig();
+          if (loadedConfig && loadedConfig.changed) {
+            writeConfig(loadedConfig);
+          }
+          config = loadedConfig;
+          if (!config || !config.projects) {
+            config = {
+              projects: [],
+            } as IConfig;
+          }
           // @ts-ignore
           mainWindow.webContents.send(Channels.CONFIG_CHANGED, config);
           // @ts-ignore
@@ -203,15 +235,57 @@ const refreshData = () => {
   mainWindow?.webContents.send(Channels.STATE_CHANGED, forwardStates);
 };
 
+ipcMain.on(Channels.DELETE_PROJECT, (event: any, data: IProject) => {
+  setTimeout(() => {
+    try {
+      const projectIndex: number | undefined = config?.projects.findIndex(
+        (p: IProject) => p.id === data.id,
+      );
+      if (config && projectIndex !== undefined) {
+        config.projects.splice(projectIndex, 1);
+      }
+      writeConfig(config);
+      refreshData();
+    } catch (e) {
+      /* empty */
+    }
+  }, 1);
+});
+
+ipcMain.on(Channels.UPDATE_OR_CREATE_PROJECT, (event: any, data: IProject) => {
+  setTimeout(() => {
+    try {
+      const projectIndex: number | undefined = config?.projects.findIndex(
+        (p: IProject) => p.id === data.id,
+      );
+      if (config) {
+        if (projectIndex === -1) {
+          config?.projects.push(data);
+        } else {
+          config.projects[projectIndex] = data;
+        }
+      }
+      writeConfig(config);
+      refreshData();
+    } catch (e) {
+      /* empty */
+    }
+  }, 1);
+});
+
 ipcMain.on(Channels.START_PROJECT, (event: any, data: IProject) => {
   setTimeout(() => {
     try {
       let waitForTimeout = 1;
       if (data.stagingGroup) {
-        const projectsForGroup = config?.projects.filter(p => p.stagingGroup === data.stagingGroup && p.name !== data.name);
+        const projectsForGroup = config?.projects.filter(
+          (p) => p.stagingGroup === data.stagingGroup && p.name !== data.name,
+        );
         console.log('Same group projects', projectsForGroup);
         if (projectsForGroup) {
+          // eslint-disable-next-line no-restricted-syntax
           for (const p of projectsForGroup) {
+            // @ts-ignore
             stopProjectForwarding(p);
             waitForTimeout = 500;
           }
@@ -228,9 +302,8 @@ ipcMain.on(Channels.START_PROJECT, (event: any, data: IProject) => {
           }
         });
       }, waitForTimeout);
-
-    }
-    catch(e) {
+    } catch (e) {
+      /* empty */
     }
     refreshData();
   }, 1);
@@ -240,8 +313,7 @@ ipcMain.on(Channels.STOP_PROJECT, (event: any, data: any) => {
   setTimeout(() => {
     try {
       stopProjectForwarding(data);
-    }
-    catch (e) {
+    } catch (e: any) {
       mainWindow?.webContents.send(Channels.SHOW_ERROR, {
         title: 'Error while stopping project',
         message: e.message,
@@ -253,8 +325,52 @@ ipcMain.on(Channels.STOP_PROJECT, (event: any, data: any) => {
   }, 1);
 });
 
+/** *********************************
+ * IPC listeners for traffic data
+ ********************************** */
+
+ipcMain.on(Channels.REQUEST_GET_NAMESPACES, (event: any, requestData: any) => {
+  debugLog('Requesting namespaces', requestData.data);
+  getAllNamespaces(requestData.data)
+    .then((data: any) => {
+      answerRequestDataWithSuccess(
+        mainWindow,
+        requestData,
+        data && data.items ? data.items.map((d: any) => d.metadata.name) : [],
+      );
+    })
+    .catch((e) => {
+      answerRequestDataWithError(mainWindow, requestData, e.toString());
+    });
+});
+
+ipcMain.on(Channels.REQUEST_GET_CONTEXTS, (event: any, requestData: any) => {
+  const contexts = getAllContexts().map((c: any) => c.name);
+  answerRequestDataWithSuccess(mainWindow, requestData, contexts);
+});
+
+ipcMain.on(Channels.REQUEST_GET_PODS, (event: any, requestData: any) => {
+  debugLog('Requesting pods', requestData.data);
+  getAllPods(requestData.data.context, requestData.data.namespace)
+    .then((data: any) => {
+      answerRequestDataWithSuccess(
+        mainWindow,
+        requestData,
+        data && data.items ? data.items.map((d: any) => d.metadata.name) : [],
+      );
+    })
+    .catch((e) => {
+      answerRequestDataWithError(
+        mainWindow,
+        requestData,
+        e.response.data.message,
+      );
+    });
+});
+
 registerStateChanges((s: IState) => {
   mainWindow?.webContents.send(Channels.STATE_CHANGED, s);
+  checkStatesForActiveness(forwardStates);
 });
 
 registerTrafficCallback((data: IAllTrafficData) => {
