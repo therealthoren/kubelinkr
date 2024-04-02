@@ -31,8 +31,9 @@ import {
   answerRequestDataWithSuccess,
   debugLog,
   getAllContexts,
-  getAllNamespaces, getAllPods
-} from "./kube/kubeHelper";
+  getAllNamespaces,
+  getAllPods,
+} from './kube/kubeHelper';
 
 class AppUpdater {
   constructor() {
@@ -348,7 +349,6 @@ ipcMain.on(Channels.REQUEST_GET_CONTEXTS, (event: any, requestData: any) => {
   answerRequestDataWithSuccess(mainWindow, requestData, contexts);
 });
 
-
 ipcMain.on(Channels.REQUEST_GET_PODS, (event: any, requestData: any) => {
   debugLog('Requesting pods', requestData.data);
   getAllPods(requestData.data.context, requestData.data.namespace)
@@ -360,11 +360,13 @@ ipcMain.on(Channels.REQUEST_GET_PODS, (event: any, requestData: any) => {
       );
     })
     .catch((e) => {
-      answerRequestDataWithError(mainWindow, requestData, e.response.data.message);
+      answerRequestDataWithError(
+        mainWindow,
+        requestData,
+        e.response.data.message,
+      );
     });
 });
-
-
 
 registerStateChanges((s: IState) => {
   mainWindow?.webContents.send(Channels.STATE_CHANGED, s);

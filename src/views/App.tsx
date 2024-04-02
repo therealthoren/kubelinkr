@@ -48,7 +48,10 @@ function Home() {
     setEditPortForward(null);
   };
 
-  const showEditPortForward = (portForward: IPortForward, project: IProjectWithState) => {
+  const showEditPortForward = (
+    portForward: IPortForward,
+    project: IProjectWithState,
+  ) => {
     setEditPortForward(portForward);
     setEditPortForwardProject(project);
     setEditPortForwardOpen(true);
@@ -236,23 +239,27 @@ function Home() {
                 {project.portforwards?.map((pf: IPortForwardWithState) => {
                   const disabled = !project.running;
                   return (
-                    <div key={pf.name} style={{
-                      display: "flex",
-                      padding: "5px 12px 5px 5px",
-                    }}>
-                      <div style={{flex: 0.9}}>
+                    <div
+                      key={pf.name}
+                      style={{
+                        display: 'flex',
+                        padding: '5px 12px 5px 5px',
+                      }}
+                    >
+                      <div style={{ flex: 0.9 }}>
                         {pf.name} {pf.contextNamespace} - {pf.localPort}:
                         {pf.sourcePort}
                       </div>
-                      <div style={{flex: 0.1}}>
-                        {disabled && <a href={"#"}
-                         onClick={() => {
-                          showEditPortForward(pf, project);
-                        }}>
-                        <Icon
-                          icon="cog"
-                        />
-                      </a>}
+                      <div style={{ flex: 0.1 }}>
+                        {disabled && (
+                          <Button
+                            onClick={() => {
+                              showEditPortForward(pf, project);
+                            }}
+                          >
+                            <Icon icon="cog" />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   );

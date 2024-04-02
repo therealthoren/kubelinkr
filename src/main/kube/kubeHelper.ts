@@ -115,7 +115,7 @@ const answerRequestDataWithError = (
   requestData: any,
   errorData: any,
 ) => {
-  debugLog("Responding with error", errorData);
+  debugLog('Responding with error', errorData);
   mainWindow?.webContents.send(Channels.REQUEST_ANSWER + requestData.answerId, {
     success: false,
     error: errorData.toString(),
@@ -165,7 +165,11 @@ const callKubeApi = (
 };
 
 const getAllPods = (contextName: string, namespace: string) => {
-  return callKubeApi(contextName, '/api/v1/namespaces/'+namespace+'/pods', 'GET');
+  return callKubeApi(
+    contextName,
+    `/api/v1/namespaces/${namespace}/pods`,
+    'GET',
+  );
 };
 
 const getAllNamespaces = (contextName: string) => {

@@ -1,12 +1,12 @@
 import fs from 'fs';
-import { IConfig, IConfigWithLoadingUpdated } from "../../models/IConfig";
 import { v4 as uuidv4 } from 'uuid';
+import { IConfig, IConfigWithLoadingUpdated } from '../../models/IConfig';
 
 const { app } = require('electron');
 
 function getAppPath() {
   return `${app.getPath('appData')}/kubelinkr/`;
-};
+}
 
 const getConfigPath = () => {
   return `${getAppPath()}config.json`;

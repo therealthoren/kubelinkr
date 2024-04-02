@@ -16,6 +16,8 @@ import { IPortForward, IProject } from '../../models/IConfig';
 import { getIpcRequestData } from '../ipcHelper/ipcRequestData';
 import { Channels } from '../../models/channel';
 
+/* eslint-disable react/jsx-props-no-spreading */
+
 export interface EditPortForwardProps {
   isOpen: boolean;
   createMode?: boolean;

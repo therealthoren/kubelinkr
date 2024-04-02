@@ -22,6 +22,12 @@ export interface EditProjectProps {
   project: IProject | null;
 }
 
+/* eslint-disable react/jsx-props-no-spreading */
+
+const defaultProps = {
+  createMode: false,
+};
+
 function AddOrEditProject({
   isOpen,
   onSaved,
@@ -194,5 +200,7 @@ function AddOrEditProject({
     </Dialog>
   );
 }
+
+AddOrEditProject.defaultProps = defaultProps;
 
 export default AddOrEditProject;
