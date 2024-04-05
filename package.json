@@ -23,6 +23,8 @@
   "contributors": [],
   "main": "./src/main/main.ts",
   "scripts": {
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
     "build:dll": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.ts",
     "build:main": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.main.prod.ts",
@@ -90,12 +92,11 @@
   },
   "dependencies": {
     "@blueprintjs/colors": "^5.1.1",
-    "@blueprintjs/core": "^5.10.0",
-    "@blueprintjs/datetime2": "^2.3.2",
-    "@blueprintjs/icons": "^5.8.0",
-    "@blueprintjs/popover2": "^2.1.2",
-    "@blueprintjs/select": "^5.1.2",
-    "@blueprintjs/table": "^5.1.2",
+    "@blueprintjs/core": "^5.10.1",
+    "@blueprintjs/icons": "^5.9.0",
+    "@blueprintjs/popover2": "^2.1.3",
+    "@blueprintjs/select": "^5.1.3",
+    "@blueprintjs/table": "^5.1.3",
     "@blueprintjs/timezone": "^4.5.43",
     "@kubernetes/client-node": "^0.20.0",
     "axios": "^1.6.8",
@@ -114,6 +115,15 @@
     "websocket-driver": "^0.7.4"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.3.1",
+    "@electron-forge/maker-deb": "^7.3.1",
+    "appdmg": "^0.6.6",
+    "@electron-forge/maker-rpm": "^7.3.1",
+    "@electron-forge/maker-squirrel": "^7.3.1",
+    "@electron-forge/maker-zip": "^7.3.1",
+    "@electron-forge/publisher-github": "^7.3.1",
+    "@electron-forge/publisher-s3": "^7.3.1",
+    "@electron-forge/maker-dmg": "^7.3.1",
     "@electron/notarize": "^2.1.0",
     "@electron/rebuild": "^3.3.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
@@ -248,5 +258,44 @@
       "src/main/**"
     ],
     "logLevel": "quiet"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-dmg",
+          "config": {
+            "name": "kubelinkr"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ],
+      "publishers": [
+        {
+          "name": "@electron-forge/publisher-github",
+          "config": {
+            "repository": {
+              "owner": "donnercody",
+              "name": "kubelinkr",
+              "draft": true
+            }
+          }
+        }
+      ]
+    }
   }
 }
