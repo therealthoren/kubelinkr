@@ -251,14 +251,14 @@ function Home() {
                         {pf.sourcePort}
                       </div>
                       <div style={{ flex: 0.1 }}>
-                        {<Button
-                            disabled={!disabled}
-                            onClick={() => {
-                              showEditPortForward(pf, project);
-                            }}
-                          >
-                            <Icon icon="cog" />
-                          </Button>}
+                        <Button
+                          disabled={!disabled}
+                          onClick={() => {
+                            showEditPortForward(pf, project);
+                          }}
+                        >
+                          <Icon icon="cog" />
+                        </Button>
                       </div>
                     </div>
                   );
