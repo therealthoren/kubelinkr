@@ -290,9 +290,9 @@
           "config": {
             "repository": {
               "owner": "donnercody",
-              "name": "kubelinkr",
-              "draft": true
-            }
+              "name": "kubelinkr"
+            },
+            "prerelease": true
           }
         }
       ]
