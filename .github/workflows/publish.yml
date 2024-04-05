@@ -25,20 +25,31 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Install and build
+      - name: Install and build and package
         run: |
           python3 -m pip install setuptools
-          npm install -D -g appdmg
           npm install
           npm run postinstall
           npm run build
+          npm run package
 
-      - name: Publish releases
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
         env:
-          # These values are used for auto updates signing
-          CSC_IDENTITY_AUTO_DISCOVERY: false
-          # This is used for uploading release assets to github
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npm run publish
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./release/build/kubelinkr-1.0.0.dmg
+          asset_name: kubelinkr-1.0.0.dmg
+          asset_content_type: application/dmg
+
+
