@@ -39,8 +39,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ package.json.version }}
-          release_name: Release ${{ package.json.version }}
+          tag_name: 1.0.0
+          release_name: Release 1.0.0
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
