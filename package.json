@@ -291,8 +291,7 @@
             "repository": {
               "owner": "donnercody",
               "name": "kubelinkr"
-            },
-            "prerelease": true
+            }
           }
         }
       ]
