@@ -251,20 +251,20 @@ function Home() {
                         {pf.sourcePort}
                       </div>
                       <div style={{ flex: 0.1 }}>
-                        {disabled && (
-                          <Button
+                        {<Button
+                            disabled={!disabled}
                             onClick={() => {
                               showEditPortForward(pf, project);
                             }}
                           >
                             <Icon icon="cog" />
-                          </Button>
-                        )}
+                          </Button>}
                       </div>
                     </div>
                   );
                 })}
                 <Button
+                  disabled={project.running}
                   intent="primary"
                   onClick={(e) => {
                     e.preventDefault();
