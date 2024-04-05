@@ -28,6 +28,7 @@ jobs:
         run: |
           python3 -m pip install setuptools
           npm install
+          npm install appdmg
           npm run postinstall
           npm run build
 
