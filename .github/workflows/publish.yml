@@ -37,6 +37,7 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: false
           # This is used for uploading release assets to github
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm run make
           npm run publish
