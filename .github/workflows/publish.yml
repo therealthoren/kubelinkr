@@ -16,13 +16,14 @@ jobs:
         id: gen_version
         run: |
           echo $version | sed 's/v//'
-          echo "version=$(echo $version | sed 's/v//')" >> $GITHUB_OUTPUT
+          echo "version=$(echo $version | sed 's/\v//')" >> $GITHUB_OUTPUT
+          echo "$version"
       - name: Use the value
         # this sets environment variables for this step
         env:
           version: ${{ steps.gen_version.outputs.version }}
         run: |
-          echo "${version}"
+          echo "${{ env.version }}"
   publish:
     needs: [set-vars]
     runs-on: ${{ matrix.os }}
