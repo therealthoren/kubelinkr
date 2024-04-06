@@ -39,10 +39,16 @@ jobs:
         with:
           node-version: 20
           cache: npm
-
+      - name: Replace Vversion
+        id: replace_version
+        uses: mad9000/actions-find-and-replace-string@5
+        with:
+          source: ${{ github.ref_name }}
+          find: 'v'
+          replace: ''
       - name: Install and build and package
         env:
-          version_number: ${{ needs.set-vars.outputs.version }}
+          version_number: ${{ steps.replace_version.outputs.result }}
         run: |
           echo "Version number is $version_number"
           python3 -m pip install setuptools
@@ -58,13 +64,6 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-      - name: Replace Vversion
-        id: replace_version
-        uses: mad9000/actions-find-and-replace-string@5
-        with:
-          source: ${{ github.ref_name }}
-          find: 'v'
-          replace: ''
       - name: Upload Release Asset DMG
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
