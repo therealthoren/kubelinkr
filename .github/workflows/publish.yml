@@ -63,7 +63,7 @@ jobs:
           asset_name: kubelinkr-$version_number.dmg
           asset_content_type: application/dmg
       - name: Upload Release Asset ARM-DMG
-        id: upload-release-asset
+        id: upload-release-asset-arm64
         uses: actions/upload-release-asset@v1
         env:
           version_number: ${{ needs.set-vars.outputs.version }}
