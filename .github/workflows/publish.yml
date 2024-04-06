@@ -7,8 +7,17 @@ on:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
+  set-vars:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ github.ref_name }}
+    steps:
+      - name: set values
+        id: gen_version
+        run: |
+          echo "version=$(echo $version | sed 's/\v//')" >> $GITHUB_OUTPUT
   publish:
-
+    needs: [set-vars]
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -32,11 +41,6 @@ jobs:
           npm run postinstall
           npm run build
           npm run package
-      - name: python version
-        run:
-          RAW_version_name="${{ github.ref_name }}"
-          version_name=$(echo $RAW_version_name | sed 's/\v//')
-          echo "version_name=$version_name" >> $GITHUB_ENV
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -49,11 +53,12 @@ jobs:
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
+          version_dashed: "${{ needs.set-vars.outputs.version }}"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./release/build/kubelinkr-${{ env.version_name }}.dmg
-          asset_name: kubelinkr-${{ env.version_name }}.dmg
+          asset_path: ./release/build/kubelinkr-${{ needs.set-vars.outputs.version }}.dmg
+          asset_name: kubelinkr-${{ needs.set-vars.outputs.version }}.dmg
           asset_content_type: application/dmg
 
 
