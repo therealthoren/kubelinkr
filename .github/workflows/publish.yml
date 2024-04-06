@@ -15,6 +15,7 @@ jobs:
       - name: set values
         id: gen_version
         run: |
+          echo $version | sed 's/\v//'
           echo "version=$(echo $version | sed 's/\v//')" >> $GITHUB_OUTPUT
   publish:
     needs: [set-vars]
