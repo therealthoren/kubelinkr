@@ -121,6 +121,8 @@ Coming soon
 
 Here are some Screenshots to show the application when you show the window. While the application is running only in background and you only see the tray icon.
 
+_For more details, please refer to the [Medium Post](https://example.com)_
+
 ![Screenshot 1](readme/screenshots/Screenshot%202024-04-05%20at%2000.02.21.png)
 
 ![Screenshot 2](readme/screenshots/Screenshot%202024-04-05%20at%2000.04.18.png)
@@ -132,7 +134,6 @@ Here are some Screenshots to show the application when you show the window. Whil
 ![Screenshot 5](readme/screenshots/Screenshot%202024-04-05%20at%2000.02.57.png)
 
 
-_For more examples, please refer to the [Medium Post](https://example.com)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
