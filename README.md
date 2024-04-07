@@ -60,7 +60,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About kubelinkr
 
-[![Product Name Screen Shot][product-screenshot]]
+![Product Name Screen Shot][product-screenshot]
 
 When you try to port-forward into kubernetes clusters, you always have to change your current-context, know the names of the pods and the ports they are running on. This is a tedious process and can be automated with a desktop application. This is where kubelinkr comes in. It is a desktop application that allows you to port-forward into your kubernetes pods with a few clicks.
 
