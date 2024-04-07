@@ -2,7 +2,7 @@
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
+<img src="https://img.shields.io/github/stars/donnercody/kubelinkr.svg?style=for-the-badge" />
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
