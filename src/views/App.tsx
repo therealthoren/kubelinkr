@@ -102,6 +102,9 @@ function Home() {
       window.electron.ipcRenderer.on(Channels.CONFIG_CHANGED, (data: any) => {
         setConfig(data);
       });
+      window.electron.ipcRenderer.on(Channels.SHOW_ALERT, (data: any) => {
+        alert(data.title);
+      });
       window.electron.ipcRenderer.on(Channels.SHOW_ERROR, (data: any) => {
         showError(data.message);
       });

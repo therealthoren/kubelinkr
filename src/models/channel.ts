@@ -17,4 +17,5 @@ export enum Channels {
   REQUEST_GET_NAMESPACES = 'request-get-namespaces',
   REQUEST_GET_CONTEXTS = 'request-get-contexts',
   REQUEST_GET_PODS = 'request-get-pods',
+  SHOW_ALERT = 'show-alert',
 }

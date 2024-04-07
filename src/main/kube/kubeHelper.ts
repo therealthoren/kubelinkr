@@ -23,16 +23,16 @@ const getUserHome = () => {
 
 let kubeBasicsData: any = null;
 
-try {
-  kubeBasicsData = yaml.load(
-    fs.readFileSync(`${getUserHome()}/.kube/config`, 'utf8'),
-  );
-} catch (e) {
-  console.error(e);
-  alert(
-    'Error loading kube config file. Please make sure you have a valid kube config file in your home directory. (e.g. ~/.kube/config)',
-  );
-}
+const loadKubeBasicsData = () => {
+  try {
+    kubeBasicsData = yaml.load(
+      fs.readFileSync(`${getUserHome()}/.kube/config`, 'utf8'),
+    );
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
 
 const getClientCertificateData = (userName: any) => {
   const context = kubeBasicsData.users.find((c: any) => c.name === userName);
@@ -193,6 +193,7 @@ export {
   getAllNamespaces,
   debugLog,
   answerRequestDataWithError,
+  loadKubeBasicsData,
   answerRequestDataWithSuccess,
   getClientKeyData,
   getBearerToken,

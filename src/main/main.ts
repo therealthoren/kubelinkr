@@ -33,6 +33,7 @@ import {
   getAllContexts,
   getAllNamespaces,
   getAllPods,
+  loadKubeBasicsData,
 } from './kube/kubeHelper';
 
 class AppUpdater {
@@ -113,6 +114,16 @@ const createWindow = async () => {
   mainWindow.on('ready-to-show', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
+    }
+
+    try {
+      loadKubeBasicsData();
+    } catch (e: any) {
+      console.error(e);
+      mainWindow.webContents.send(Channels.SHOW_ALERT, {
+        title: 'Error while loading kube basics config. Please check your kube config in ~/.kube/config',
+        message: e.message,
+      });
     }
     mainWindow.hide();
     tray = new TrayGenerator(mainWindow);
