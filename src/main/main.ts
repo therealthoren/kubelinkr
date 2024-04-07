@@ -121,7 +121,8 @@ const createWindow = async () => {
     } catch (e: any) {
       console.error(e);
       mainWindow.webContents.send(Channels.SHOW_ALERT, {
-        title: 'Error while loading kube basics config. Please check your kube config in ~/.kube/config',
+        title:
+          'Error while loading kube basics config. Please check your kube config in ~/.kube/config',
         message: e.message,
       });
     }
