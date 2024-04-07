@@ -9,7 +9,7 @@
 
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://github.com/donnercody/kubelinkr">
     <img src="assets/icon.png" alt="Logo" width="110" height="110">
   </a>
 
@@ -19,11 +19,11 @@
     Port forward your kubernetes pods with a desktop application.
     <br />
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+    <a href="#download">Download</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
+    <a href="https://github.com/donnercody/kubelinkr/issues">Report Bug</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
+    <a href="https://github.com/donnercody/kubelinkr/issues">Request Feature</a>
   </p>
 </div>
 
@@ -60,7 +60,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About kubelinkr
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+[![Product Name Screen Shot][product-screenshot]]
 
 When you try to port-forward into kubernetes clusters, you always have to change your current-context, know the names of the pods and the ports they are running on. This is a tedious process and can be automated with a desktop application. This is where kubelinkr comes in. It is a desktop application that allows you to port-forward into your kubernetes pods with a few clicks.
 
@@ -74,9 +74,41 @@ Here's why:
 
 
 <!-- GETTING STARTED -->
-## Download & Install
+## Download 
+<a id="download"></a>
 
-Here are the download versions for Mac, Windows and Linux.
+Here are the download versions for Mac. (Windows and Linux will come later)
+
+<table>
+<tr>
+<td style="text-align: center">
+<img src="readme/icon_mac.png" style="width: 120px" />
+
+</td>
+<td style="text-align: center">
+<img src="readme/icon_win.png" style="width: 120px" />
+
+</td>
+<td style="text-align: center">
+<img src="readme/icon_linux.png" style="width: 120px" />
+
+</td>
+</tr>
+<tr>
+<td style="text-align: center">
+
+<a href="https://github.com/donnercody/kubelinkr/releases/download/v1.0.6/kubelinkr-1.0.6.dmg">Download Mac</a>
+
+<a href="https://github.com/donnercody/kubelinkr/releases/download/v1.0.6/kubelinkr-1.0.6-arm64.dmg">Download Mac (ARM)</a>
+
+</td>
+<td style="text-align: center">
+Coming Soon</td>
+<td style="text-align: center">
+Coming soon
+</td>
+</tr>
+</table>
 
 
 
@@ -87,23 +119,33 @@ Here are the download versions for Mac, Windows and Linux.
 <!-- USAGE EXAMPLES -->
 ### Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Here are some Screenshots to show the application when you show the window. While the application is running only in background and you only see the tray icon.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+![Screenshot 1](readme/screenshots/Screenshot%202024-04-05%20at%2000.02.21.png)
+
+![Screenshot 2](readme/screenshots/Screenshot%202024-04-05%20at%2000.04.18.png)
+
+![Screenshot 3](readme/screenshots/Screenshot%202024-04-05%20at%2000.02.34.png)
+
+![Screenshot 4](readme/screenshots/Screenshot%202024-04-05%20at%2000.02.42.png)
+
+![Screenshot 5](readme/screenshots/Screenshot%202024-04-05%20at%2000.02.57.png)
+
+
+_For more examples, please refer to the [Medium Post](https://example.com)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- ROADMAP -->
 ## Roadmap
 
-- [x] Add Changelog
+- [ ] Add Changelog
+- [ ] Support Services instead of Pods
 - [ ] Multi-language Support
   - [ ] Chinese
   - [ ] Spanish
 
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/donnercody/kubelinkr/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -120,7 +162,6 @@ This section should list any major frameworks/libraries used to bootstrap your p
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 <!-- LICENSE -->
 ## License
 
@@ -128,14 +169,12 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Your Name - Thoren Lederer
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/donnercody/kubelinkr](https://github.com/your_username/repo_name)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -146,14 +185,11 @@ Project Link: [https://github.com/your_username/repo_name](https://github.com/yo
 
 Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
 
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
 * [GitHub Pages](https://pages.github.com)
 * [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
+* [React](https://reactjs.org/)
+* [Electron](https://www.electronjs.org/)
+* [Blueprint](https://blueprintjs.com/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -172,12 +208,13 @@ Use this space to list resources you find helpful and would like to give credit 
 [license-shield]: https://img.shields.io/github/license/donnercody/kubelinkr.svg?style=for-the-badge
 [license-url]: https://github.com/donnercody/kubelinkr/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[product-screenshot]: images/screenshot.png
+[product-screenshot]: readme/screenshots/readme_banner.png
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
 [Electron]: https://img.shields.io/badge/Electron-191970?style=for-the-badge&logo=electron&logoColor=white
 [Electron-url]: https://www.electronjs.org/
 [Blueprint]: https://img.shields.io/badge/Blueprint-30404D?style=for-the-badge&logo=blueprint&logoColor=white
 [Blueprint-url]: https://blueprintjs.com/
+[Medium-post]: https://example.com
 
 
