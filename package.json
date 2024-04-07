@@ -111,7 +111,7 @@
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.16.0",
     "react-select": "^5.8.0",
-    "recharts": "2.1.12",
+    "recharts": "2.12.0",
     "uuid": "^9.0.1",
     "websocket-driver": "^0.7.4"
   },
