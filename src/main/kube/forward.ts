@@ -171,7 +171,6 @@ const startPortForwarding = (
           );
           ws.on('open', function open() {});
           ws.on('message', function incoming(data: any) {
-            debugLog('websocket received', data);
             if (typeof data === 'string') {
               // TODO: handle string data
             } else if (data instanceof Buffer) {
@@ -223,13 +222,13 @@ const startPortForwarding = (
 
                 debugLog('server writes', data);
                 // Wait until ws is Open
-                for (let i = 0; i < 1000; i += 1) {
+                for (let i = 0; i < 500; i += 1) {
                   if (ws.readyState === WebSocket.OPEN) {
                     break;
                   }
                   // eslint-disable-next-line no-await-in-loop
                   await new Promise((resolve) => {
-                    setTimeout(resolve, 100);
+                    setTimeout(resolve, 10);
                   });
                 }
                 ws.send(buff);
@@ -240,22 +239,37 @@ const startPortForwarding = (
                   );
                 }
               } catch (e) {
-                console.error(e);
+                debugLog('Problem in sending data to websocket', e);
                 connect();
               }
             });
           });
-
+          ws.on('error', function close(err: any) {
+            try {
+              openConnectionId -= 1;
+              debugLog('errored from websocket', err, openConnectionId);
+              forcedDisconnect = true;
+              if (ws.readyState === WebSocket.OPEN) {
+                ws.close();
+              }
+              _serversocket.end('HTTP/1.1 500 Internal Server Error\r\n\r\n');
+            } catch (e) {
+              /* empty */
+            }
+            onDisconnected();
+          });
           ws.on('close', function close() {
             try {
-              debugLog('disconnected');
               openConnectionId -= 1;
+              debugLog('disconnected', openConnectionId);
+              _serversocket.end('HTTP/1.1 500 Internal Server Error\r\n\r\n');
               if (!forcedDisconnect) {
                 connect();
               }
             } catch (e) {
               /* empty */
             }
+            onDisconnected();
           });
         };
 
@@ -263,7 +277,9 @@ const startPortForwarding = (
 
         _serversocket.on('end', function () {
           try {
-            debugLog('end');
+            openConnectionId -= 1;
+            debugLog('end', openConnectionId);
+            _serversocket.end('HTTP/1.1 500 Internal Server Error\r\n\r\n');
             if (ws.readyState === WebSocket.OPEN) {
               ws.close();
             }
@@ -275,8 +291,8 @@ const startPortForwarding = (
 
         _serversocket.on('close', function close() {
           try {
-            debugLog('disconnected');
             openConnectionId -= 1;
+            debugLog('disconnected', openConnectionId);
             forcedDisconnect = true;
             if (ws.readyState === WebSocket.OPEN) {
               ws.close();
@@ -291,13 +307,19 @@ const startPortForwarding = (
           'error',
           function close(err: any, address: any, family: any, host: any) {
             try {
-              debugLog('errored out', err, address, family, host);
               openConnectionId -= 1;
+              debugLog(
+                'errored out',
+                err,
+                address,
+                family,
+                host,
+                openConnectionId,
+              );
               forcedDisconnect = true;
               if (ws.readyState === WebSocket.OPEN) {
                 ws.close();
               }
-              _serversocket.end();
             } catch (e) {
               /* empty */
             }
@@ -307,7 +329,7 @@ const startPortForwarding = (
         return {
           serversocket: _serversocket,
           close: () => {
-            _serversocket.end();
+            _serversocket.end('HTTP/1.1 500 Internal Server Error\r\n\r\n');
             if (ws && ws.readyState === WebSocket.OPEN) {
               ws.close();
             }

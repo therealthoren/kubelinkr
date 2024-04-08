@@ -97,9 +97,9 @@ Here are the download versions for Mac. (Windows and Linux will come later)
 <tr>
 <td style="text-align: center">
 
-<a href="https://github.com/donnercody/kubelinkr/releases/download/v1.0.7/kubelinkr-1.0.7.dmg">Download Mac</a>
+<a href="https://github.com/donnercody/kubelinkr/releases/download/v1.0.8/kubelinkr-1.0.7.dmg">Download Mac</a>
 
-<a href="https://github.com/donnercody/kubelinkr/releases/download/v1.0.7/kubelinkr-1.0.7-arm64.dmg">Download Mac (ARM)</a>
+<a href="https://github.com/donnercody/kubelinkr/releases/download/v1.0.8/kubelinkr-1.0.7-arm64.dmg">Download Mac (ARM)</a>
 
 </td>
 <td style="text-align: center">
