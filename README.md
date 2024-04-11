@@ -121,7 +121,7 @@ Coming soon
 
 Here are some Screenshots to show the application when you show the window. While the application is running only in background and you only see the tray icon.
 
-_For more details, please refer to the [Medium Post](https://example.com)_
+_For more details, please refer to the [Medium Post](https://medium.com/@thoren.lederer/this-little-kubernetes-port-forwarder-helped-me-to-save-a-lot-of-time-and-headache-e37f227fbefc)_
 
 ![Screenshot 1](readme/screenshots/Screenshot%202024-04-05%20at%2000.02.21.png)
 
