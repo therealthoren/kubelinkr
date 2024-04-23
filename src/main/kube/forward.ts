@@ -132,7 +132,6 @@ const startPortForwarding = (
       onDisconnected: () => void,
     ) => {
       try {
-        let firstDebugData: any = null;
         openConnectionId += 1;
         const namespace: string = forward.contextNamespace || 'default';
         debugLog('namespace', namespace);
@@ -144,7 +143,6 @@ const startPortForwarding = (
           .replace('https://', 'wss://')
           .replace('http://', 'ws://');
         let messageCount = 0;
-        let forcedDisconnect = false;
         let answerResetTimeout: any = null;
         let ws: any;
         debugLog(authorizationData);
@@ -266,8 +264,7 @@ const startPortForwarding = (
             try {
               status = -1;
               openConnectionId -= 1;
-              debugLog('errored from websocket', err, status, firstDebugData);
-              forcedDisconnect = true;
+              debugLog('errored from websocket', err, status);
               if (ws.readyState === WebSocket.OPEN) {
                 ws.close();
               }
@@ -286,11 +283,7 @@ const startPortForwarding = (
               }
               if (!retryConnect()) {
                 openConnectionId -= 1;
-                debugLog(
-                  'disconnected from remote with status: ',
-                  status,
-                  firstDebugData,
-                );
+                debugLog('disconnected from remote with status: ', status);
                 status = -2;
                 _serversocket.end('HTTP/1.1 500 Internal Server Error\r\n\r\n');
               }
@@ -321,7 +314,6 @@ const startPortForwarding = (
           try {
             openConnectionId -= 1;
             debugLog('disconnected', openConnectionId);
-            forcedDisconnect = true;
             if (ws.readyState === WebSocket.OPEN) {
               ws.close();
             }
@@ -344,7 +336,6 @@ const startPortForwarding = (
                 host,
                 openConnectionId,
               );
-              forcedDisconnect = true;
               if (ws.readyState === WebSocket.OPEN) {
                 ws.close();
               }
