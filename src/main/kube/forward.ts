@@ -132,6 +132,7 @@ const startPortForwarding = (
       onDisconnected: () => void,
     ) => {
       try {
+        let firstDebugData: any = null;
         openConnectionId += 1;
         const namespace: string = forward.contextNamespace || 'default';
         debugLog('namespace', namespace);
@@ -151,29 +152,45 @@ const startPortForwarding = (
         const websocketPath = `${wssurl}/api/v1/namespaces/${namespace}/pods/${forward.name}/portforward?ports=${forward.sourcePort}`;
         debugLog(websocketPath);
 
-        const connect = () => {
-          ws = new WebSocket(
-            websocketPath,
-            [
-              'v4.channel.k8s.io',
-              'v3.channel.k8s.io',
-              'v2.channel.k8s.io',
-              'channel.k8s.io',
-            ],
-            {
-              ...additionalHeaderOptions,
-              headers: {
-                Upgrade: 'websocket',
-                Connection: 'Upgrade',
-                ...authorizationData,
+        const connect = async () => {
+          let status = 0;
+          let retry = 0;
+          const retryConnect = async () => {
+            if (retry > 3) {
+              return false;
+            }
+            if (retry > 0) {
+              debugLog('lost connection, retrying the ', retry, ' nd time');
+            }
+            retry += 1;
+            ws = new WebSocket(
+              websocketPath,
+              [
+                'v4.channel.k8s.io',
+                'v3.channel.k8s.io',
+                'v2.channel.k8s.io',
+                'channel.k8s.io',
+              ],
+              {
+                ...additionalHeaderOptions,
+                headers: {
+                  Upgrade: 'websocket',
+                  Connection: 'Upgrade',
+                  ...authorizationData,
+                },
               },
-            },
-          );
-          ws.on('open', function open() {});
+            );
+            return true;
+          };
+          await retryConnect();
+          ws.on('open', function open() {
+            status = 1;
+          });
           ws.on('message', function incoming(data: any) {
             if (typeof data === 'string') {
               // TODO: handle string data
             } else if (data instanceof Buffer) {
+              status = 3;
               const streamNum: number = data.readInt8(0);
 
               // When array contains 00 50 00 as byte array, it means the connection is closed
@@ -210,6 +227,7 @@ const startPortForwarding = (
             // eslint-disable-next-line no-new,no-async-promise-executor
             new Promise(async () => {
               try {
+                status = 2;
                 const buff = Buffer.alloc(data.length + 1);
 
                 buff.writeInt8(0, 0);
@@ -222,7 +240,7 @@ const startPortForwarding = (
 
                 debugLog('server writes', data);
                 // Wait until ws is Open
-                for (let i = 0; i < 500; i += 1) {
+                for (let i = 0; i < 1000; i += 1) {
                   if (ws.readyState === WebSocket.OPEN) {
                     break;
                   }
@@ -246,8 +264,9 @@ const startPortForwarding = (
           });
           ws.on('error', function close(err: any) {
             try {
+              status = -1;
               openConnectionId -= 1;
-              debugLog('errored from websocket', err, openConnectionId);
+              debugLog('errored from websocket', err, status, firstDebugData);
               forcedDisconnect = true;
               if (ws.readyState === WebSocket.OPEN) {
                 ws.close();
@@ -260,11 +279,20 @@ const startPortForwarding = (
           });
           ws.on('close', function close() {
             try {
-              openConnectionId -= 1;
-              debugLog('disconnected', openConnectionId);
-              _serversocket.end('HTTP/1.1 500 Internal Server Error\r\n\r\n');
-              if (!forcedDisconnect) {
-                connect();
+              if (status >= 3) {
+                status = 4;
+                debugLog("Fine disconnect, don't reconnect", status);
+                return;
+              }
+              if (!retryConnect()) {
+                openConnectionId -= 1;
+                debugLog(
+                  'disconnected from remote with status: ',
+                  status,
+                  firstDebugData,
+                );
+                status = -2;
+                _serversocket.end('HTTP/1.1 500 Internal Server Error\r\n\r\n');
               }
             } catch (e) {
               /* empty */

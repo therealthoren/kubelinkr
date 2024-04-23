@@ -5,7 +5,7 @@ import * as https from 'https';
 import { IPortForward } from '../../models/IConfig';
 import { Channels } from '../../models/channel';
 
-const DEBUG = false;
+const DEBUG = process.env.NODE_ENV === 'development';
 
 const debugLog = (message: any, ...args: any[]) => {
   if (DEBUG) {
