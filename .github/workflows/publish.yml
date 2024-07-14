@@ -51,7 +51,7 @@ jobs:
           version_number: ${{ steps.replace_version.outputs.value }}
         run: |
           echo "Version number is $version_number"
-          python3 -m pip install setuptools --break-system-packages
+          python3 -m pip install --user setuptools
           npm install
           npm run postinstall
           npm run build
