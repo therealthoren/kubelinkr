@@ -131,9 +131,9 @@ function SectionWithBackground({
         style={{
           background: 'white',
           borderTop: '1px solid #e0e0e0',
-          transition: 'max-height 0.5s ease-in-out 0s',
+          transition: 'max-height 0.5s ease-in-out 0.5s',
           overflow: 'hidden',
-          maxHeight: collapsed ? '0px' : '400px',
+          maxHeight: collapsed ? '0px' : '3400px',
         }}
       >
         <div style={{ padding: '5px 12px 5px 5px' }}>{children}</div>
