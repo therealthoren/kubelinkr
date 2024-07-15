@@ -6,7 +6,7 @@
     "port-forward"
   ],
   "name": "kubelinkr",
-  "version": "1.0.10",
+  "version": "1.0.12",
   "homepage": "https://github.com/donnercody/kubelinkr",
   "bugs": {
     "url": "https://github.com/donnercody/kubelinkr"

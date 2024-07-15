@@ -1,6 +1,6 @@
 {
   "name": "kubelinkr",
-  "version": "1.0.10",
+  "version": "1.0.12",
   "description": "A MenuBar One-Click Application for kubernet forwarding multiple ports to your local environment",
   "license": "MIT",
   "author": {
